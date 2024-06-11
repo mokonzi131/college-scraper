@@ -1,4 +1,5 @@
 import httpx
+import json
 
 
 def fetch_api_data(payload) -> list:
@@ -45,11 +46,38 @@ def load_data_paged() -> list:
     return result
 
 
+def store_data(filename: str, content: str):
+    """
+    Rewrites the filename with the content, expects a directory called data/ to exist
+    """
+
+    with open(filename, "w") as file:
+        file.write(content)
+
+
 if __name__ == "__main__":
     result = load_data_full()
     # result = load_data_paged()
     # print(len(result))
     # print(result[0])
+
+    school_names = sorted([item["name"] for item in result])
+    school_names_content = "\n".join(school_names)
+    store_data("data/schools.txt", school_names_content)
+
+    school_name_id_map = sorted(
+        [{"id": item["orgId"], "name": item["name"]} for item in result],
+        key=lambda x: x["name"],
+    )
+    school_name_id_content = "\n".join(
+        [f"{item["name"]},{item["id"]}" for item in school_name_id_map]
+    )
+    store_data("data/schools.csv", school_name_id_content)
+
+    school_data = [(item["orgId"], item) for item in result]
+    for school_id, school_item in school_data:
+        school_blob = json.dumps(school_item)
+        store_data(f"data/{school_id}.json", school_blob)
 
 
 # result size => 4434

@@ -24,7 +24,8 @@ If you need more time and would like to reschedule for later this week, that's f
 
 And if you'd rather do this offline, as a standard coding challenge that you do at your leisure, that's fine too
 
-## TODO
+## Assignment
 
-Fetch the list, persist, show to JIM
-Pull them all at once - pull them paginated
+1. Fetch the data from the website
+1. Fetch the data using paging
+1. Persist the JSON blobs (I'll use the FS for this)
