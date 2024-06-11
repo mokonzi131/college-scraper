@@ -3,6 +3,10 @@ import json
 
 
 def fetch_api_data(payload) -> list:
+    """
+    Loads data from the website and extracts the school info as a dictionary
+    """
+
     URL = "https://cs-search-api-prod.collegeplanning-prod.collegeboard.org/colleges"
 
     response = httpx.post(URL, json=payload)
@@ -11,6 +15,10 @@ def fetch_api_data(payload) -> list:
 
 
 def load_data_full() -> list:
+    """
+    Loads the full set of data all at once
+    """
+
     result = fetch_api_data(
         {
             "eventType": "search",
@@ -25,9 +33,13 @@ def load_data_full() -> list:
 
 
 def load_data_paged() -> list:
+    """
+    Loads the data one page (of 100 items) at a time... slower but may help avoid throttling... actually, may also cause throttling - depends on the API :)
+    """
+
     result = []
 
-    # 45 batches of 100 should be give us the 44xx items as a result
+    # 45 batches of 100 gives us the 44xx items as a result
     for i in range(45):
         batch_size = 100
         offset = i * batch_size
@@ -61,10 +73,12 @@ if __name__ == "__main__":
     # print(len(result))
     # print(result[0])
 
+    # make a simple list of school names and store as a txt file
     school_names = sorted([item["name"] for item in result])
     school_names_content = "\n".join(school_names)
     store_data("data/schools.txt", school_names_content)
 
+    # make a csv file that helps find the school (orgId) for a given school name
     school_name_id_map = sorted(
         [{"id": item["orgId"], "name": item["name"]} for item in result],
         key=lambda x: x["name"],
@@ -74,12 +88,14 @@ if __name__ == "__main__":
     )
     store_data("data/schools.csv", school_name_id_content)
 
+    # store each school data as it's own json blob
     school_data = [(item["orgId"], item) for item in result]
     for school_id, school_item in school_data:
         school_blob = json.dumps(school_item)
         store_data(f"data/{school_id}.json", school_blob)
 
 
+# REF: what the data looks like when you pull it from the API
 # result size => 4434
 # result sample item / first item => {
 #     "orgId": "913",
