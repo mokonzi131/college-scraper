@@ -23,3 +23,8 @@ You'll be doing the coding, but it should feel more collaborative than a balls-t
 If you need more time and would like to reschedule for later this week, that's fine too - let me know whatever you need
 
 And if you'd rather do this offline, as a standard coding challenge that you do at your leisure, that's fine too
+
+## TODO
+
+Fetch the list, persist, show to JIM
+Pull them all at once - pull them paginated
